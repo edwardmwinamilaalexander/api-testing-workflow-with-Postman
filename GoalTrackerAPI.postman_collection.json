@@ -1,0 +1,1482 @@
+{
+  "info": {
+    "_postman_id": "c7963e0c-5c1f-4c7b-ba3f-baf92138b79a",
+    "name": "GoalTrackerAPI",
+    "description": "Complete API test suite for Goal Tracker Application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54311657",
+    "_collection_link": "https://go.postman.co/collection/54311657-c7963e0c-5c1f-4c7b-ba3f-baf92138b79a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Status",
+      "item": [
+        {
+          "name": "Get API Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains status', function() {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('status');",
+                  "});",
+                  "",
+                  "pm.test('API is operational', function() {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql('OPERATIONAL')",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "User Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const registerData = pm.response.json();",
+                  "const requestBody = JSON.parse(pm.request.body.raw);",
+                  "",
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has Content-Type application/json', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response time is below 1000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "",
+                  "pm.test('User email matches the email sent in the request', function () {",
+                  "    pm.expect(registerData.user.email.toLowerCase()).to.eql(requestBody.email.toLowerCase());",
+                  "});",
+                  "",
+                  "pm.test('User name matches the name sent in the request', function () {",
+                  "    pm.expect(registerData.user.name).to.eql(requestBody.name);",
+                  "});",
+                  "",
+                  "// Save environment variables",
+                  "pm.environment.set(\"user_name\", registerData.user.name);",
+                  "pm.environment.set(\"user_email\", registerData.user.email);",
+                  "pm.environment.set(\"user_password\", requestBody.password);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"{{$randomPassword}}\",\n  \"name\": \"{{$randomFullName}}\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "pm.test('Response body is a JSON object', function () {",
+                  "    pm.expect(jsonData).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test('Response has a property msg', function () {",
+                  "    pm.expect(jsonData).to.have.property('msg');",
+                  " ",
+                  "});",
+                  "",
+                  "pm.test('Response contains a name token', function () {",
+                  "    pm.expect(jsonData).to.have.property('token')",
+                  "",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "pm.test('authToken is saved to the environment', function () {",
+                  "    pm.environment.set('userToken', jsonData.token);",
+                  "    pm.expect(pm.environment.get('userToken')).to.eql(jsonData.token);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"{{user_email}}\",\n    \"password\": \"{{user_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  "",
+                  "",
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "pm.test('Response body is valid JSON', function () {",
+                  "    jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('object');",
+                  "});",
+                  "",
+                  "",
+                  "pm.test('Response contains a non-empty token', function () {",
+                  "    pm.expect(jsonData).to.have.property('name');",
+                  "",
+                  "});",
+                  "",
+                  "pm.test('Response contains a non-empty token', function () {",
+                  "    pm.expect(jsonData).to.have.property('email');",
+                  "",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Ensure required variables are set before sending",
+                  "const requiredVars = ['baseUrl', 'authToken'];",
+                  "requiredVars.forEach((v) => {",
+                  "    if (!pm.environment.get(v) && !pm.collectionVariables.get(v) && !pm.globals.get(v)) {",
+                  "        console.warn(`[Update User Profile] Missing variable: ${v}`);",
+                  "    }",
+                  "});",
+                  "",
+                  "// Validate body is valid JSON before sending",
+                  "try {",
+                  "    const body = pm.request.body && pm.request.body.raw;",
+                  "    if (body) JSON.parse(body);",
+                  "} catch (e) {",
+                  "    console.error('[Update User Profile] Request body is not valid JSON:', e.message);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John {{user_name}}\",\n    \"oldPassword\": \"{{user_password}}\",\n    \"newPassword\": \"new_{{$randomPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/updateprofile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "updateprofile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Wrong Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.expect(pm.response.code).to.eql(401);",
+                  "})",
+                  "",
+                  "pm.test('Response does not contain token', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.not.have.property('token');",
+                  "})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{user_email}}\",\"password\":\"definitely-wrong-password-xyz-123\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST '{{baseUrl}}/api/v1/auth/login' -H 'Content-Type: application/json' -d '{\"email\":\"{{user_email}}\",\"password\":\"definitely-wrong-password-xyz-123\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Register Missing Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 or 401\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 401]);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains 'msg' field\", function () {",
+                  "    pm.expect(json).to.have.property(\"msg\");",
+                  "});",
+                  "",
+                  "pm.test(\"Error message matches expected text\", function () {",
+                  "    pm.expect(json.msg).to.eql(\"Please provide a name, email address and password\");",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"name\": \"{{$randomFullName}}\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST '{{baseUrl}}/api/v1/auth/register' -H 'Content-Type: application/json' -d '{\"name\":\"Test User\",\"password\":\"password123\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Register Duplicate Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code indicates a validation or conflict error\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 409]);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains 'msg' field\", function () {",
+                  "    pm.expect(json).to.have.property(\"msg\");",
+                  "});",
+                  "",
+                  "pm.test(\"Message matches expected text\", function () {",
+                  "    pm.expect(json.msg).to.eql(\"Email address already exists\");",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{user_name}}\",\r\n    \"email\": \"{{user_email}}\",\r\n    \"password\": \"{{user_password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST '{{baseUrl}}/api/v1/auth/register' -H 'Content-Type: application/json' -d '{\"name\":\"{{user_name}}\",\"email\":\"{{user_email}}\",\"password\":\"{{user_password}}\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Login Invalid Email Format",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code indicates authentication failure\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 401, 403]);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains 'msg' field\", function () {",
+                  "    pm.expect(json).to.have.property(\"msg\");",
+                  "});",
+                  "",
+                  "pm.test(\"Message matches expected text\", function () {",
+                  "    pm.expect(json.msg).to.eql(\"Invalid Credentials\");",
+                  "});",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"email%gmail.com\",\r\n    \"password\": \"{{user_password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST '{{baseUrl}}/api/v1/auth/login' -H 'Content-Type: application/json' -d '{\"email\":\"not-an-email\",\"password\":\"somepassword\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile Without Auth",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code indicates authentication failure\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 401, 403]);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains 'msg' field\", function () {",
+                  "    pm.expect(json).to.have.property(\"msg\");",
+                  "});",
+                  "",
+                  "pm.test(\"Message matches expected text\", function () {",
+                  "    pm.expect(json.msg).to.eql(\"Authentication invalid\");",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"John {{user_name}}\",\r\n    \"oldPassword\": \"{{user_password}}\",\r\n    \"newPassword\": \"new_{{$randomPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/updateprofile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "updateprofile"
+              ]
+            },
+            "description": "Generated from cURL: curl -X PATCH '{{baseUrl}}/api/v1/auth/updateprofile' -H 'Content-Type: application/json' -d '{\"name\":\"New Name\"}'"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Goals",
+      "item": [
+        {
+          "name": "Create Goal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Goal created successfully', function() {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('goal');",
+                  "});",
+                  "",
+                  "pm.test('Goal created and ID saved', function() {",
+                  "    var jsonData = pm.response.json();",
+                  "    var goalId = (jsonData.goal && jsonData.goal._id) || jsonData._id || (jsonData.data && jsonData.data._id);",
+                  "    if (goalId) {",
+                  "        pm.environment.set('goalId', goalId);",
+                  "    }",
+                  "    pm.expect(goalId, 'response should contain a goal _id').to.exist;",
+                  "});",
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData.goal) {",
+                  "    pm.environment.set('title', jsonData.goal.title);",
+                  "    pm.environment.set('description', jsonData.goal.description);",
+                  "}",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"{{$randomLoremWords}}\",\n  \"description\": \"{{$randomLoremSentence}}\",\n  \"priority\": \"high\",\n  \"status\": \"to-do\"\n}\n"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Goals",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "// --- Validate 'goals' exists and is an array ---",
+                  "pm.test(\"'goals' field exists and is an array\", function () {",
+                  "    pm.expect(json).to.have.property(\"goals\");",
+                  "    pm.expect(json.goals).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "// --- Validate array is not empty ---",
+                  "pm.test(\"'goals' array is not empty\", function () {",
+                  "    pm.expect(json.goals.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "// --- Validate each goal object ---",
+                  "json.goals.forEach((goal, index) => {",
+                  "",
+                  "    pm.test(`Goal ${index + 1}: contains all required fields`, function () {",
+                  "        const required = [\"_id\", \"title\", \"description\", \"status\", \"priority\", \"createdBy\", \"createdAt\"];",
+                  "        required.forEach(f => pm.expect(goal).to.have.property(f));",
+                  "    });",
+                  "",
+                  "  ",
+                  "   ",
+                  " ",
+                  "",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Goal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Goal details retrieved', function() {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.goal).to.have.property('_id');",
+                  "    pm.expect(jsonData.goal).to.have.property('title');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals/:_id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals",
+                ":_id"
+              ],
+              "variable": [
+                {
+                  "key": "_id",
+                  "value": "{{goalId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Goal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"'goal' field exists and is an object\", function () {",
+                  "    pm.expect(jsonData).to.have.property(\"goal\");",
+                  "    pm.expect(jsonData.goal).to.be.an(\"object\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"{{$randomLoremWords}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"priority\": \"high\",\n    \"status\": \"in-progress\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals/:_id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals",
+                ":_id"
+              ],
+              "variable": [
+                {
+                  "key": "_id",
+                  "value": "{{goalId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Goal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Goal deleted successfully', function() {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('msg');",
+                  "    pm.expect(jsonData.msg).to.include('removed');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals/:_id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals",
+                ":_id"
+              ],
+              "variable": [
+                {
+                  "key": "_id",
+                  "value": "{{goalId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Goal Without Auth",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.expect(pm.response.code).to.eql(401);",
+                  "});",
+                  "pm.test(\"No goal returned\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.not.have.property(\"_id\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Unauthorized goal attempt\",\"description\":\"This should be rejected\",\"priority\":\"low\",\"status\":\"to-do\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST '{{baseUrl}}/api/v1/goals' -H 'Content-Type: application/json' -d '{\"title\":\"Unauthorized goal attempt\",\"description\":\"This should be rejected\",\"priority\":\"low\",\"status\":\"to-do\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Goal Invalid ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code indicates authentication failure\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 401, 403]);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains 'msg' field\", function () {",
+                  "    pm.expect(json).to.have.property(\"msg\");",
+                  "});",
+                  "",
+                  "pm.test(\"get signle goal invalid id\", function () {",
+                  "    pm.expect(json.msg).to.eql(\"Authentication invalid\");",
+                  "});",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals/invalid-id-xyz-123",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals",
+                "invalid-id-xyz-123"
+              ],
+              "variable": [
+                {
+                  "key": "_id"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET '{{baseUrl}}/api/v1/goals/:_id' -H 'Authorization: Bearer {{authToken}}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Goal Missing Title",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code indicates a validation error\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 422]);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains 'msg' field\", function () {",
+                  "    pm.expect(json).to.have.property(\"msg\");",
+                  "});",
+                  "",
+                  "pm.test(\"Create a goal with missing title\", function () {",
+                  "    pm.expect(json.msg).to.eql(\"Please add a title\");",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"description\": \"{{$randomLoremSentence}}\",\r\n    \"priority\": \"high\",\r\n    \"status\": \"to-do\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST '{{baseUrl}}/api/v1/goals' -H 'Content-Type: application/json' -H 'Authorization: Bearer {{authToken}}' -d '{\"description\":\"Missing title field\",\"priority\":\"low\",\"status\":\"to-do\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Goal Invalid Priority",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code indicates a validation error\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 422]);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains 'msg' field\", function () {",
+                  "    pm.expect(json).to.have.property(\"msg\");",
+                  "});",
+                  "",
+                  "pm.test(\"Create an invalid priority\", function () {",
+                  "    pm.expect(json.msg).to.eql(\"`super-duper-priority` is not a valid enum value for path `priority`.\");",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"{{$randomLoremWords}}\",\r\n  \"description\": \"{{$randomLoremSentence}}\",\r\n  \"priority\": \"super-duper-priority\",\r\n  \"status\": \"to-do\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST '{{baseUrl}}/api/v1/goals' -H 'Content-Type: application/json' -H 'Authorization: Bearer {{authToken}}' -d '{\"title\":\"Test goal\",\"description\":\"Test\",\"priority\":\"super-duper-urgent\",\"status\":\"to-do\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Goal Invalid ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code indicates a not‑found error\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains 'msg' field\", function () {",
+                  "    pm.expect(json).to.have.property(\"msg\");",
+                  "});",
+                  "",
+                  "pm.test(\"Update a gola with invalid ID\", function () {",
+                  "    pm.expect(json.msg).to.eql(\"Item not found with id: invalid-id-xyz-123\");",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"{{$randomLoremWords}}\",\r\n    \"description\": \"{{$randomLoremSentence}}\",\r\n    \"priority\": \"high\",\r\n    \"status\": \"in-progress\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals/invalid-id-xyz-123",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals",
+                "invalid-id-xyz-123"
+              ]
+            },
+            "description": "Generated from cURL: curl -X PATCH '{{baseUrl}}/api/v1/goals/invalid-id-xyz-123' -H 'Content-Type: application/json' -H 'Authorization: Bearer {{authToken}}' -d '{\"title\":\"Updated title\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Goal Invalid ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code indicates a not‑found error\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains 'msg' field\", function () {",
+                  "    pm.expect(json).to.have.property(\"msg\");",
+                  "});",
+                  "",
+                  "pm.test(\"delete a goal with invalid ID\", function () {",
+                  "    pm.expect(json.msg).to.eql(\"No goal with id: 000000000000000000000000\");",
+                  "});",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals/000000000000000000000000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals",
+                "000000000000000000000000"
+              ]
+            },
+            "description": "Generated from cURL: curl -X DELETE '{{baseUrl}}/api/v1/goals/000000000000000000000000' -H 'Authorization: Bearer {{authToken}}'"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ShowProgress",
+      "item": [
+        {
+          "name": "Show Goal Progress",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has myProgress object', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('myProgress');",
+                  "    pm.expect(jsonData.myProgress).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test('myProgress contains all status keys', function () {",
+                  "    const progress = pm.response.json().myProgress;",
+                  "    pm.expect(progress).to.have.property('to-do');",
+                  "    pm.expect(progress).to.have.property('in-progress');",
+                  "    pm.expect(progress).to.have.property('completed');",
+                  "    pm.expect(progress).to.have.property('cancelled');",
+                  "});",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals/showprogress",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals",
+                "showprogress"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://goal-tracker-api.onrender.com"
+    }
+  ]
+}
