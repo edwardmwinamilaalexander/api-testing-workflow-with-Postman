@@ -1,10 +1,9 @@
-
 name: Postman API Tests
 
 on:
+  pull_request:
   push:
     branches: [ main, master ]
-  pull_request:
 
 jobs:
   run-postman-tests:
@@ -13,11 +12,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
 
       - name: Install Postman CLI
         run: |
@@ -38,3 +32,4 @@ jobs:
         with:
           name: postman-html-report
           path: postman-report.html
+
