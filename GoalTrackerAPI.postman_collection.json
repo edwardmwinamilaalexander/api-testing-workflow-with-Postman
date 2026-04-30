@@ -1,11 +1,11 @@
 {
   "info": {
-    "_postman_id": "c7963e0c-5c1f-4c7b-ba3f-baf92138b79a",
+    "_postman_id": "21a0e3da-0e39-4933-aeca-59bbb92427ae",
     "name": "GoalTrackerAPI",
     "description": "Complete API test suite for Goal Tracker Application",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "54311657",
-    "_collection_link": "https://go.postman.co/collection/54311657-c7963e0c-5c1f-4c7b-ba3f-baf92138b79a?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/54311657-21a0e3da-0e39-4933-aeca-59bbb92427ae?source=collection_link"
   },
   "item": [
     {
@@ -1043,65 +1043,6 @@
           "response": []
         },
         {
-          "name": "Get Single Goal Invalid ID",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code indicates authentication failure\", function () {",
-                  "    pm.expect(pm.response.code).to.be.oneOf([400, 401, 403]);",
-                  "});",
-                  "",
-                  "const json = pm.response.json();",
-                  "",
-                  "pm.test(\"Response contains 'msg' field\", function () {",
-                  "    pm.expect(json).to.have.property(\"msg\");",
-                  "});",
-                  "",
-                  "pm.test(\"get signle goal invalid id\", function () {",
-                  "    pm.expect(json.msg).to.eql(\"Authentication invalid\");",
-                  "});",
-                  "",
-                  "",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{authToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/goals/invalid-id-xyz-123",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "goals",
-                "invalid-id-xyz-123"
-              ],
-              "variable": [
-                {
-                  "key": "_id"
-                }
-              ]
-            },
-            "description": "Generated from cURL: curl -X GET '{{baseUrl}}/api/v1/goals/:_id' -H 'Authorization: Bearer {{authToken}}'"
-          },
-          "response": []
-        },
-        {
           "name": "Create Goal Missing Title",
           "event": [
             {
@@ -1145,13 +1086,11 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json",
-                "disabled": false
+                "value": "application/json"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{authToken}}",
-                "disabled": false
+                "value": "Bearer {{authToken}}"
               }
             ],
             "body": {
@@ -1222,13 +1161,11 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json",
-                "disabled": false
+                "value": "application/json"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{authToken}}",
-                "disabled": false
+                "value": "Bearer {{authToken}}"
               }
             ],
             "body": {
@@ -1252,6 +1189,76 @@
               ]
             },
             "description": "Generated from cURL: curl -X POST '{{baseUrl}}/api/v1/goals' -H 'Content-Type: application/json' -H 'Authorization: Bearer {{authToken}}' -d '{\"title\":\"Test goal\",\"description\":\"Test\",\"priority\":\"super-duper-urgent\",\"status\":\"to-do\"}'"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Goal Invalid ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code indicates authentication failure\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([404, 401, 403]);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Response contains 'msg' field\", function () {",
+                  "    pm.expect(json).to.have.property(\"msg\");",
+                  "});",
+                  "",
+                  "pm.test(\"get signle goal invalid id\", function () {",
+                  "    pm.expect(json.msg).to.contain(\"Item not found\");",
+                  "});",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/goals/invalid-id-xyz-123",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "goals",
+                "invalid-id-xyz-123"
+              ],
+              "variable": [
+                {
+                  "key": "_id",
+                  "value": "invalid-id-xyz-123"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET '{{baseUrl}}/api/v1/goals/:_id' -H 'Authorization: Bearer {{authToken}}'"
           },
           "response": []
         },
@@ -1299,13 +1306,11 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json",
-                "disabled": false
+                "value": "application/json"
               },
               {
                 "key": "Authorization",
-                "value": "Bearer {{authToken}}",
-                "disabled": false
+                "value": "Bearer {{authToken}}"
               }
             ],
             "body": {
@@ -1378,8 +1383,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{authToken}}",
-                "disabled": false
+                "value": "Bearer {{authToken}}"
               }
             ],
             "url": {
