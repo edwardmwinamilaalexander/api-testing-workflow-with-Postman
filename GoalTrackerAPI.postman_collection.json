@@ -1209,8 +1209,8 @@
                   "    pm.expect(json).to.have.property(\"msg\");",
                   "});",
                   "",
-                  "pm.test(\"get signle goal invalid id\", function () {",
-                  "    pm.expect(json.msg).to.contain(\"Item not found\");",
+                  "pm.test(\"get single goal invalid id\", function () {",
+                  "    pm.expect(json.msg).to.eql(\"Item not found with id: invalid-id-xyz-123\");",
                   "});",
                   "",
                   "",
@@ -1475,6 +1475,30 @@
           "response": []
         }
       ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
     }
   ],
   "variable": [
