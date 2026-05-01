@@ -71,4 +71,9 @@ The suite produces multiple report formats to support debugging, CI visibility, 
 Postman Cloud Reports — Every Postman CLI run automatically syncs to the Postman Dashboard, providing visual timelines, performance graphs, request/response inspection, and historical trends across runs.
 
 HTML Reports — When executed via Newman, a full HTML report is generated for offline review, ideal for local debugging or attaching to CI artifacts.
+<img width="1861" height="928" alt="image" src="https://github.com/user-attachments/assets/203a4f22-2de0-40fe-ab90-26316d5c65b7" />
+
 ```
+
+<img width="1861" height="928" alt="image" src="https://github.com/user-attachments/assets/0a20c58d-27c7-4ce3-bf2e-ed1970c5ca5e" />
+
