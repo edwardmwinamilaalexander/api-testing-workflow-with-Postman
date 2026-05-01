@@ -9,6 +9,11 @@ jobs:
   run-postman-tests:
     runs-on: ubuntu-latest
 
+    env:
+      POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+      COLLECTION_ID: "<your-collection-id>"
+      ENVIRONMENT_ID: "<your-environment-id>"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,12 +23,24 @@ jobs:
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
 
       - name: Authenticate Postman CLI
-        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+        run: postman login --with-api-key $POSTMAN_API_KEY
+
+      - name: Download latest Postman collection
+        run: |
+          curl -X GET "https://api.getpostman.com/collections/$COLLECTION_ID" \
+          -H "X-Api-Key: $POSTMAN_API_KEY" \
+          -o collection.json
+
+      - name: Download latest Postman environment
+        run: |
+          curl -X GET "https://api.getpostman.com/environments/$ENVIRONMENT_ID" \
+          -H "X-Api-Key: $POSTMAN_API_KEY" \
+          -o environment.json
 
       - name: Run Postman Collection
         run: |
-          postman collection run "GoalTrackerAPI.postman_collection.json" \
-            -e "GoalTrackerEnv.postman_environment.json" \
+          postman collection run "collection.json" \
+            -e "environment.json" \
             --reporters cli,html \
             --reporter-html-export "postman-report.html"
 
